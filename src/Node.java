@@ -6,6 +6,7 @@ public class Node {
 	public int[][] values;
 	public LinkedList<Node> children; 
 	public Node parent; 
+	public String lastMove;
 	
 	public Node(int[][] vals){
 		g = 0; 
@@ -13,22 +14,17 @@ public class Node {
 		values = vals;
 		children = new LinkedList<Node>();
 		parent = null; 
-//		for(int i = 0; i < values.length; ++i){
-//			for(int j = 0; j < values[i].length; ++j){
-//				System.out.print("[" + i + "][" +j +"] =" + values[i][j] + ", ");
-//			}
-//		}
-//		System.out.println();
+		lastMove = "";
+;
 	}
 	
 	public int[][] getValues(){
-		int[][] vals = new int[this.values.length][this.values[0].length];
-		for(int i = 0; i < this.values.length; ++i){
-			for(int j = 0; j < this.values[i].length; ++j){
-				vals[i][j] = this.values[i][j];
-			}
+		int[][] vals = new int[values.length][];
+		//copy vals array and return it
+		for(int i = 0; i < vals.length; ++i){
+			vals[i] = Arrays.copyOf(values[i], values[i].length);
 		}
-		return vals;
+		return vals; 
 	}
 	public int getG(){
 		return this.g;
@@ -37,7 +33,12 @@ public class Node {
 	public int getF(){
 		return this.f;
 	}
-	
+	public void setLastMove(String m){
+		this.lastMove = m;
+	}
+	public String getLastMove(){
+		return this.lastMove;
+	}
 	public void setG(int g){
 		this.g = g;
 	}
@@ -54,51 +55,56 @@ public class Node {
 	public LinkedList<Node> getChildren(){
 		return this.children;
 	}
-	public void generateChildren(){
+	public String getKey(){
+		return Arrays.deepToString(getValues());
+
+	}
+	public int generateChildren(){
+		int count = 0;
+		//need to make this more efficient 
 		for(int i = 0; i < values.length; ++i){
 			for(int j = 0; j < values[i].length; ++j){
-				//System.out.print("[" + i + "][" +j +"] =" + values[i][j] + ", ");
-			
 				//check to see if current iteration is 0 (blank space), and if it is, make sure the moves in each direction are valid
 				//if the move is valid, add a new child node
 				if(values[i][j] == 0){
-					//System.out.println("found 0 at index ["+ i + "][" + j + "]");
-					//check move to the right
-					if(j+1 < values[i].length ){
-						int[][] tempVals = new int[values.length][values[i].length];
-						tempVals = getValues();
-						tempVals[i][j] = getValues()[i][j+1];
-						tempVals[i][j + 1] = 0;
-						children.add(new Node(tempVals));
-					}
-					//check move to the left
-					if(j-1 >= 0){
-						int[][] tempVals = new int[values.length][values[i].length];
-						tempVals = getValues();
-						tempVals[i][j] = getValues()[i][j - 1];
-						tempVals[i][j - 1] = 0;
-						children.add(new Node(tempVals));
-					}
+
 					//check move up
-					if(i-1 >= 0){
-						int[][] tempVals = new int[values.length][values[i].length];
-						tempVals = getValues();
+					if(i-1 >= 0 ){
+						int[][] tempVals =  getValues();
 						tempVals[i][j] = getValues()[i - 1][j];
 						tempVals[i - 1][j] = 0;
 						children.add(new Node(tempVals));
+						count++;
 					}
 					//check move down
 					if(i+1 < values.length){
-						int[][] tempVals = new int[values.length][values[i].length];
-						tempVals = getValues();
+						int[][] tempVals = getValues();
 						tempVals[i][j] = getValues()[i+1][j]; 
 						tempVals[i + 1][j] = 0;
 						children.add(new Node(tempVals));
+						count++;
 					}
+					//check move to the right
+					if(j+1 < values[i].length ){
+						int[][] tempVals = getValues();
+						tempVals[i][j] = getValues()[i][j+1];
+						tempVals[i][j + 1] = 0;
+						children.add(new Node(tempVals));
+						count++;
+					}
+					//check move to the left
+					if(j-1 >= 0){
+						int[][] tempVals =  getValues();
+						tempVals[i][j] = getValues()[i][j - 1];
+						tempVals[i][j - 1] = 0;
+						children.add(new Node(tempVals));
+						count++;
+					}
+					
 				}
 				
 			}
 		}
-		//System.out.println("foudn " + count + " children");
+		return count;
 	}
 }

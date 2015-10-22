@@ -2,7 +2,7 @@
 
 This program solves the 8-puzzle problem with the following algorithms: 
 
-- A* search (complete an optimal)
+- A* search (complete and optimal)
 - Hill climbing
 	- Steepest Ascent (not complete)
 	- First-choice (not complete)

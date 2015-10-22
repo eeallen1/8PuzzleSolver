@@ -18,6 +18,7 @@ And uses the following admissible heuristics:
 
 A puzzle is a 2D int array. The goal state looks like this
 :
+
 	{8, 7, 6}
 
 	{5, 4, 3}
